@@ -13,11 +13,11 @@ from custom_components.ai_toolset.tools.url_fetch import URLFetchTool
 @pytest.fixture
 def url_fetch_tool(hass: HomeAssistant):
     """Return a URL fetch tool instance."""
-    return URLFetchTool(hass)
+    return URLFetchTool()
 
 
 async def test_url_fetch_html_content(
-    hass: HomeAssistant, url_fetch_tool: URLFetchTool
+    hass: HomeAssistant, url_fetch_tool: URLFetchTool, llm_context
 ):
     """Test fetching HTML content."""
     html_content = """
@@ -44,7 +44,7 @@ async def test_url_fetch_html_content(
         tool_input = llm.ToolInput(
             tool_name="url_fetch", tool_args={"url": "https://example.com"}
         )
-        result = await url_fetch_tool.async_call(tool_input)
+        result = await url_fetch_tool.async_call(hass, tool_input, llm_context)
 
         assert "error" not in result
         assert result["url"] == "https://example.com"
@@ -55,7 +55,7 @@ async def test_url_fetch_html_content(
 
 
 async def test_url_fetch_non_html_content(
-    hass: HomeAssistant, url_fetch_tool: URLFetchTool
+    hass: HomeAssistant, url_fetch_tool: URLFetchTool, llm_context
 ):
     """Test fetching non-HTML content."""
     text_content = "Plain text content"
@@ -72,7 +72,7 @@ async def test_url_fetch_non_html_content(
         tool_input = llm.ToolInput(
             tool_name="url_fetch", tool_args={"url": "https://example.com/file.txt"}
         )
-        result = await url_fetch_tool.async_call(tool_input)
+        result = await url_fetch_tool.async_call(hass, tool_input, llm_context)
 
         assert "error" not in result
         assert result["content_type"] == "text/plain"
@@ -80,7 +80,7 @@ async def test_url_fetch_non_html_content(
 
 
 async def test_url_fetch_with_max_length(
-    hass: HomeAssistant, url_fetch_tool: URLFetchTool
+    hass: HomeAssistant, url_fetch_tool: URLFetchTool, llm_context
 ):
     """Test fetching content with max length limit."""
     html_content = "<html><body>" + ("x" * 20000) + "</body></html>"
@@ -98,14 +98,14 @@ async def test_url_fetch_with_max_length(
             tool_name="url_fetch",
             tool_args={"url": "https://example.com", "max_length": 100},
         )
-        result = await url_fetch_tool.async_call(tool_input)
+        result = await url_fetch_tool.async_call(hass, tool_input, llm_context)
 
         assert "error" not in result
         assert len(result["text"]) <= 100
 
 
 async def test_url_fetch_error_handling(
-    hass: HomeAssistant, url_fetch_tool: URLFetchTool
+    hass: HomeAssistant, url_fetch_tool: URLFetchTool, llm_context
 ):
     """Test error handling for URL fetch."""
     with patch(
@@ -114,6 +114,6 @@ async def test_url_fetch_error_handling(
         tool_input = llm.ToolInput(
             tool_name="url_fetch", tool_args={"url": "https://example.com"}
         )
-        result = await url_fetch_tool.async_call(tool_input)
+        result = await url_fetch_tool.async_call(hass, tool_input, llm_context)
 
         assert "error" in result

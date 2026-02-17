@@ -9,7 +9,7 @@ line-length = 88
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
+    "E",  # pycodestyle errors.
     "W",  # pycodestyle warnings
     "F",  # pyflakes
     "I",  # isort

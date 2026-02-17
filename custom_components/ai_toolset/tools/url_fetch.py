@@ -31,11 +31,12 @@ class URLFetchTool(llm.Tool):
         }
     )
 
-    def __init__(self, hass: HomeAssistant) -> None:
-        """Initialize the URL fetch tool."""
-        self.hass = hass
-
-    async def async_call(self, tool_input: llm.ToolInput) -> dict[str, Any]:
+    async def async_call(
+        self,
+        hass: HomeAssistant,
+        tool_input: llm.ToolInput,
+        llm_context: llm.LLMContext,
+    ) -> dict[str, Any]:
         """Fetch URL content."""
         url = tool_input.tool_args["url"]
         include_html = tool_input.tool_args.get("include_html", False)

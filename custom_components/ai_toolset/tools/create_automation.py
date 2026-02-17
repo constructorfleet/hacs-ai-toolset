@@ -36,11 +36,12 @@ class CreateAutomationTool(llm.Tool):
         }
     )
 
-    def __init__(self, hass: HomeAssistant) -> None:
-        """Initialize the create automation tool."""
-        self.hass = hass
-
-    async def async_call(self, tool_input: llm.ToolInput) -> dict[str, Any]:
+    async def async_call(
+        self,
+        hass: HomeAssistant,
+        tool_input: llm.ToolInput,
+        llm_context: llm.LLMContext,
+    ) -> dict[str, Any]:
         """Create automation."""
         automation_id = tool_input.tool_args["automation_id"]
         alias = tool_input.tool_args["alias"]
@@ -67,17 +68,17 @@ class CreateAutomationTool(llm.Tool):
                 config["description"] = description
 
             # Validate the automation configuration
-            await automation.async_validate_config_item(self.hass, config)
+            await automation.async_validate_config_item(hass, config)
 
             # Create the automation
-            component = self.hass.data.get("automation")
+            component = hass.data.get("automation")
             if component is None:
                 return {"error": "Automation component not loaded"}
 
             # Store the automation configuration
             # Note: This is a simplified approach. In production, you'd want to
             # persist this to automations.yaml or use the automation editor service
-            await self.hass.services.async_call(
+            await hass.services.async_call(
                 "automation",
                 "reload",
                 blocking=True,
