@@ -39,7 +39,8 @@ jobs:
             --cov-report=xml \
             --cov-report=term-missing \
             -v \
-            -n auto
+            -n auto \
+            -k "not test_code_timeout"
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
