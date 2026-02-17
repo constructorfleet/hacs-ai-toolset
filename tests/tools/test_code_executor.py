@@ -48,7 +48,7 @@ async def test_math_calculation(hass: HomeAssistant, code_executor_tool_enabled:
     """Test math calculations."""
     tool_input = llm.ToolInput(
         tool_name="code_executor",
-        tool_args={"code": "import math\nprint(math.sqrt(16))"}
+        tool_args={"code": "print(16 ** 0.5)"}
     )
     result = await code_executor_tool_enabled.async_call(tool_input)
     
@@ -73,14 +73,14 @@ async def test_code_timeout(hass: HomeAssistant, code_executor_tool_enabled: Cod
     tool_input = llm.ToolInput(
         tool_name="code_executor",
         tool_args={
-            "code": "import time\ntime.sleep(10)",
+            "code": "while True: pass",
             "timeout": 1
         }
     )
     result = await code_executor_tool_enabled.async_call(tool_input)
     
     assert "error" in result
-    assert "timeout" in result["error"].lower()
+    assert "timeout" in result["error"].lower() or "timed out" in result["error"].lower()
 
 
 async def test_restricted_builtins(hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool):

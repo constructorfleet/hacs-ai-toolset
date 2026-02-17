@@ -61,6 +61,10 @@ class AIToolsetAPI(llm.API):
             CodeExecutorTool(hass, config),
         ]
 
+    async def async_get_api_instance(self, llm_api: llm.APIInstance) -> llm.APIInstance:
+        """Get the API instance."""
+        return llm_api
+
     async def async_get_tools(self) -> list[llm.Tool]:
         """Get list of LLM tools."""
         return self.tools

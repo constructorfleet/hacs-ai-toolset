@@ -18,6 +18,7 @@ async def test_async_setup(hass: HomeAssistant):
 async def test_async_setup_entry(hass: HomeAssistant, mock_config_entry: MockConfigEntry):
     """Test setting up the integration via config entry."""
     mock_config_entry.add_to_hass(hass)
+    hass.data[DOMAIN] = {}
     
     with patch("custom_components.ai_toolset.llm.async_register_api"):
         assert await async_setup_entry(hass, mock_config_entry)
