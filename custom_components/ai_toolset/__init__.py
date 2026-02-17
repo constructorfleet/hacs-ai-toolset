@@ -1,0 +1,75 @@
+"""AI Toolset integration for Home Assistant LLM API."""
+from __future__ import annotations
+
+import logging
+from typing import Any
+
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import llm
+
+from .const import DOMAIN
+from .tools import (
+    CodeExecutorTool,
+    CreateAutomationTool,
+    URLFetchTool,
+    WebSearchTool,
+)
+
+_LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
+    """Set up the AI Toolset component."""
+    hass.data.setdefault(DOMAIN, {})
+    return True
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up AI Toolset from a config entry."""
+    # Store the config entry data
+    hass.data[DOMAIN][entry.entry_id] = entry.data
+    
+    # Register LLM tools
+    api = AIToolsetAPI(hass, entry)
+    llm.async_register_api(hass, api)
+    
+    _LOGGER.info("AI Toolset integration loaded with %d tools", len(api.tools))
+    return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    hass.data[DOMAIN].pop(entry.entry_id, None)
+    return True
+
+
+class AIToolsetAPI(llm.API):
+    """AI Toolset LLM API."""
+
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        """Initialize the API."""
+        super().__init__(hass=hass, id=DOMAIN, name="AI Toolset")
+        self.entry = entry
+        
+        # Initialize all tools
+        config = entry.data
+        self.tools = [
+            WebSearchTool(hass, config),
+            URLFetchTool(hass),
+            CreateAutomationTool(hass),
+            CodeExecutorTool(hass, config),
+        ]
+
+    async def async_get_tools(self) -> list[llm.Tool]:
+        """Get list of LLM tools."""
+        return self.tools
+
+    async def async_call_tool(self, tool_input: llm.ToolInput) -> dict[str, Any]:
+        """Call a tool."""
+        # Find the tool
+        for tool in self.tools:
+            if tool.name == tool_input.tool_name:
+                return await tool.async_call(tool_input)
+        
+        return {"error": f"Unknown tool: {tool_input.tool_name}"}
