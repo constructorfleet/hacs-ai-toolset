@@ -9,6 +9,7 @@ from .code_executor import CodeExecutorTool
 from .create_automation import CreateAutomationTool
 from .music import MusicFindTool, MusicPlayTool
 from .url_fetch import URLFetchTool
+from .waze_travel_time import GetTravelDistanceTool, GetTravelTimeTool
 from .web_search import WebSearchTool
 
 __all__ = [
@@ -21,4 +22,6 @@ __all__ = [
     "CalendarUpdateEventTool",
     "MusicFindTool",
     "MusicPlayTool",
+    "GetTravelTimeTool",
+    "GetTravelDistanceTool",
 ]

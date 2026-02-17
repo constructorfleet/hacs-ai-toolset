@@ -16,6 +16,8 @@ from .tools import (
     CalendarUpdateEventTool,
     CodeExecutorTool,
     CreateAutomationTool,
+    GetTravelDistanceTool,
+    GetTravelTimeTool,
     MusicFindTool,
     MusicPlayTool,
     URLFetchTool,
@@ -70,6 +72,8 @@ class AIToolsetAPI(llm.API):
             CalendarUpdateEventTool(),
             MusicFindTool(),
             MusicPlayTool(),
+            GetTravelTimeTool(),
+            GetTravelDistanceTool(),
         ]
 
     async def async_get_api_instance(
@@ -89,7 +93,7 @@ class AIToolsetAPI(llm.API):
         # Create and return the API instance
         return llm.APIInstance(
             api=self,
-            api_prompt="You have access to AI Toolset tools for web search, URL fetching, automation creation, code execution, calendar management, and music playback.",
+            api_prompt="You have access to AI Toolset tools for web search, URL fetching, automation creation, code execution, calendar management, music playback, and Waze travel time/distance.",
             llm_context=llm_context,
             tools=tools,
         )

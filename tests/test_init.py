@@ -66,5 +66,5 @@ async def test_async_get_api_instance(
     assert api_instance.api.name == "AI Toolset"
     assert api_instance.llm_context == llm_context
     assert (
-        len(api_instance.tools) == 9
-    )  # web_search, url_fetch, create_automation, code_executor, calendar_get_events, calendar_add_event, calendar_update_event, music_find, music_play
+        len(api_instance.tools) == 11
+    )  # web_search, url_fetch, create_automation, code_executor, calendar_get_events, calendar_add_event, calendar_update_event, music_find, music_play, get_travel_time, get_travel_distance
