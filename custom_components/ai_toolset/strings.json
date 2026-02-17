@@ -3,17 +3,47 @@
   "config": {
     "step": {
       "user": {
-        "description": "AI Toolset provides LLM tools for web search, URL fetching, automation creation, and code execution.",
+        "title": "Select Search Engine",
+        "description": "Choose which search engine to use for web searches.",
         "data": {
-          "default_search_engine": "Default Search Engine",
+          "default_search_engine": "Search Engine"
+        }
+      },
+      "google": {
+        "title": "Configure Google Search",
+        "description": "Enter your Google Custom Search API credentials.",
+        "data": {
           "google_api_key": "Google API Key",
           "google_cx": "Google Custom Search Engine ID",
+          "max_results": "Maximum Search Results",
+          "enable_code_executor": "Enable Code Executor (use with caution)"
+        }
+      },
+      "kagi": {
+        "title": "Configure Kagi Search",
+        "description": "Enter your Kagi API key.",
+        "data": {
           "kagi_api_key": "Kagi API Key",
+          "max_results": "Maximum Search Results",
+          "enable_code_executor": "Enable Code Executor (use with caution)"
+        }
+      },
+      "bing": {
+        "title": "Configure Bing Search",
+        "description": "Enter your Bing Search API key.",
+        "data": {
           "bing_api_key": "Bing API Key",
           "max_results": "Maximum Search Results",
           "enable_code_executor": "Enable Code Executor (use with caution)"
         }
       }
+    },
+    "error": {
+      "missing_api_key": "API key is required",
+      "missing_cx": "Google Custom Search Engine ID is required"
+    },
+    "abort": {
+      "already_configured": "This integration is already configured"
     }
   }
 }
