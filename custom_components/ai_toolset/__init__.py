@@ -57,8 +57,8 @@ class AIToolsetAPI(llm.API):
         config = entry.data
         self.tools = [
             WebSearchTool(hass, config),
-            URLFetchTool(hass),
-            CreateAutomationTool(hass),
+            URLFetchTool(),
+            CreateAutomationTool(),
             CodeExecutorTool(hass, config),
         ]
 

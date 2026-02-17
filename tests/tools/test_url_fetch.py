@@ -13,7 +13,7 @@ from custom_components.ai_toolset.tools.url_fetch import URLFetchTool
 @pytest.fixture
 def url_fetch_tool(hass: HomeAssistant):
     """Return a URL fetch tool instance."""
-    return URLFetchTool(hass)
+    return URLFetchTool()
 
 
 async def test_url_fetch_html_content(

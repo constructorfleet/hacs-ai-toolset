@@ -10,7 +10,7 @@ from custom_components.ai_toolset.tools.create_automation import CreateAutomatio
 @pytest.fixture
 def create_automation_tool(hass: HomeAssistant):
     """Return a create automation tool instance."""
-    return CreateAutomationTool(hass)
+    return CreateAutomationTool()
 
 
 async def test_create_simple_automation(

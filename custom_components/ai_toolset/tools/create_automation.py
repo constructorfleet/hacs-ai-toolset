@@ -36,10 +36,6 @@ class CreateAutomationTool(llm.Tool):
         }
     )
 
-    def __init__(self, hass: HomeAssistant) -> None:
-        """Initialize the create automation tool."""
-        pass
-
     async def async_call(
         self,
         hass: HomeAssistant,
