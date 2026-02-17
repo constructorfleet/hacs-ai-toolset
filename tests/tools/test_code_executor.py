@@ -77,7 +77,7 @@ async def test_code_timeout(
     hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool
 ):
     """Test code execution timeout.
-    
+
     Note: This test is excluded from CI (see test.yml) because it runs an infinite
     loop that hangs the test suite. The timeout mechanism doesn't work properly
     because exec() is synchronous and blocks the event loop. To properly implement
