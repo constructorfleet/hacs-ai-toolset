@@ -52,6 +52,7 @@ async def test_async_get_api_instance(
     llm_context = llm.LLMContext(
         platform="test_platform",
         context=None,
+        user_prompt=None,
         language="en",
         assistant=None,
         device_id=None,

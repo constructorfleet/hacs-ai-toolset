@@ -1,10 +1,10 @@
 [project]
 name = "hacs-ai-toolset"
 version = "1.0.0"
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 
 [tool.ruff]
-target-version = "py314"
+target-version = "py313"
 line-length = 88
 
 [tool.ruff.lint]
