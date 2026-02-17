@@ -87,12 +87,3 @@ class AIToolsetAPI(llm.API):
     async def async_get_tools(self) -> list[llm.Tool]:
         """Get list of LLM tools."""
         return self.tools
-
-    async def async_call_tool(self, tool_input: llm.ToolInput) -> dict[str, Any]:
-        """Call a tool."""
-        # Find the tool
-        for tool in self.tools:
-            if tool.name == tool_input.tool_name:
-                return await tool.async_call(tool_input)
-
-        return {"error": f"Unknown tool: {tool_input.tool_name}"}
