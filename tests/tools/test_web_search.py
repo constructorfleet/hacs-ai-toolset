@@ -19,7 +19,7 @@ def web_search_tool(hass: HomeAssistant):
     return WebSearchTool(hass, config)
 
 
-async def test_google_search(hass: HomeAssistant, web_search_tool: WebSearchTool):
+async def test_google_search(hass: HomeAssistant, web_search_tool: WebSearchTool, llm_context):
     """Test Google search."""
     mock_response_data = {
         "items": [
@@ -48,7 +48,7 @@ async def test_google_search(hass: HomeAssistant, web_search_tool: WebSearchTool
             tool_name="web_search",
             tool_args={"query": "test query", "engine": "google"},
         )
-        result = await web_search_tool.async_call(tool_input)
+        result = await web_search_tool.async_call(hass, tool_input, llm_context)
 
         assert "error" not in result
         assert result["query"] == "test query"
@@ -57,7 +57,7 @@ async def test_google_search(hass: HomeAssistant, web_search_tool: WebSearchTool
         assert result["results"][0]["title"] == "Test Result 1"
 
 
-async def test_google_image_search(hass: HomeAssistant, web_search_tool: WebSearchTool):
+async def test_google_image_search(hass: HomeAssistant, web_search_tool: WebSearchTool, llm_context):
     """Test Google image search."""
     mock_response_data = {
         "items": [
@@ -86,7 +86,7 @@ async def test_google_image_search(hass: HomeAssistant, web_search_tool: WebSear
                 "engine": "google",
             },
         )
-        result = await web_search_tool.async_call(tool_input)
+        result = await web_search_tool.async_call(hass, tool_input, llm_context)
 
         assert "error" not in result
         assert result["search_type"] == "image"
@@ -94,20 +94,20 @@ async def test_google_image_search(hass: HomeAssistant, web_search_tool: WebSear
         assert "thumbnail_url" in result["results"][0]
 
 
-async def test_search_no_engine_configured(hass: HomeAssistant):
+async def test_search_no_engine_configured(hass: HomeAssistant, llm_context):
     """Test search with no engine configured."""
     tool = WebSearchTool(hass, {})
 
     tool_input = llm.ToolInput(
         tool_name="web_search", tool_args={"query": "test query"}
     )
-    result = await tool.async_call(tool_input)
+    result = await tool.async_call(hass, tool_input, llm_context)
 
     assert "error" in result
     assert "No search engine configured" in result["error"]
 
 
-async def test_search_max_results(hass: HomeAssistant, web_search_tool: WebSearchTool):
+async def test_search_max_results(hass: HomeAssistant, web_search_tool: WebSearchTool, llm_context):
     """Test search with max results parameter."""
     items = [
         {
@@ -131,7 +131,7 @@ async def test_search_max_results(hass: HomeAssistant, web_search_tool: WebSearc
             tool_name="web_search",
             tool_args={"query": "test query", "max_results": 3, "engine": "google"},
         )
-        result = await web_search_tool.async_call(tool_input)
+        result = await web_search_tool.async_call(hass, tool_input, llm_context)
 
         assert "error" not in result
         assert len(result["results"]) == 10  # Mock returns all, but API would limit

@@ -40,7 +40,12 @@ class CreateAutomationTool(llm.Tool):
         """Initialize the create automation tool."""
         self.hass = hass
 
-    async def async_call(self, tool_input: llm.ToolInput) -> dict[str, Any]:
+    async def async_call(
+        self,
+        hass: HomeAssistant,
+        tool_input: llm.ToolInput,
+        llm_context: llm.LLMContext,
+    ) -> dict[str, Any]:
         """Create automation."""
         automation_id = tool_input.tool_args["automation_id"]
         alias = tool_input.tool_args["alias"]

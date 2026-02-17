@@ -14,7 +14,7 @@ def create_automation_tool(hass: HomeAssistant):
 
 
 async def test_create_simple_automation(
-    hass: HomeAssistant, create_automation_tool: CreateAutomationTool
+    hass: HomeAssistant, create_automation_tool: CreateAutomationTool, llm_context
 ):
     """Test creating a simple automation."""
     tool_input = llm.ToolInput(
@@ -36,14 +36,14 @@ async def test_create_simple_automation(
 
     # The automation tool requires full Home Assistant setup
     # For now, just verify it returns a dict (success or error)
-    result = await create_automation_tool.async_call(tool_input)
+    result = await create_automation_tool.async_call(hass, tool_input, llm_context)
 
     assert isinstance(result, dict)
     assert "automation_id" in result or "error" in result or "success" in result
 
 
 async def test_create_automation_with_conditions(
-    hass: HomeAssistant, create_automation_tool: CreateAutomationTool
+    hass: HomeAssistant, create_automation_tool: CreateAutomationTool, llm_context
 ):
     """Test creating an automation with conditions."""
     tool_input = llm.ToolInput(
@@ -65,7 +65,7 @@ async def test_create_automation_with_conditions(
 
     # The automation tool requires full Home Assistant setup
     # For now, just verify it returns a dict (success or error)
-    result = await create_automation_tool.async_call(tool_input)
+    result = await create_automation_tool.async_call(hass, tool_input, llm_context)
 
     assert isinstance(result, dict)
     assert "automation_id" in result or "error" in result or "success" in result

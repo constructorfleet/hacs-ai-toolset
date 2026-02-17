@@ -22,59 +22,59 @@ def code_executor_tool_disabled(hass: HomeAssistant):
 
 
 async def test_code_executor_disabled(
-    hass: HomeAssistant, code_executor_tool_disabled: CodeExecutorTool
+    hass: HomeAssistant, code_executor_tool_disabled: CodeExecutorTool, llm_context
 ):
     """Test that code executor is disabled by default."""
     tool_input = llm.ToolInput(
         tool_name="code_executor", tool_args={"code": "print('Hello, World!')"}
     )
-    result = await code_executor_tool_disabled.async_call(tool_input)
+    result = await code_executor_tool_disabled.async_call(hass, tool_input, llm_context)
 
     assert "error" in result
     assert "disabled" in result["error"].lower()
 
 
 async def test_simple_code_execution(
-    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool
+    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool, llm_context
 ):
     """Test executing simple Python code."""
     tool_input = llm.ToolInput(
         tool_name="code_executor", tool_args={"code": "print('Hello, World!')"}
     )
-    result = await code_executor_tool_enabled.async_call(tool_input)
+    result = await code_executor_tool_enabled.async_call(hass, tool_input, llm_context)
 
     assert result["success"] is True
     assert "Hello, World!" in result["output"]
 
 
 async def test_math_calculation(
-    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool
+    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool, llm_context
 ):
     """Test math calculations."""
     tool_input = llm.ToolInput(
         tool_name="code_executor", tool_args={"code": "print(16 ** 0.5)"}
     )
-    result = await code_executor_tool_enabled.async_call(tool_input)
+    result = await code_executor_tool_enabled.async_call(hass, tool_input, llm_context)
 
     assert result["success"] is True
     assert "4.0" in result["output"]
 
 
 async def test_code_with_error(
-    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool
+    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool, llm_context
 ):
     """Test executing code that raises an error."""
     tool_input = llm.ToolInput(
         tool_name="code_executor", tool_args={"code": "x = 1 / 0"}
     )
-    result = await code_executor_tool_enabled.async_call(tool_input)
+    result = await code_executor_tool_enabled.async_call(hass, tool_input, llm_context)
 
     assert result["success"] is False
     assert "error" in result
 
 
 async def test_code_timeout(
-    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool
+    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool, llm_context
 ):
     """Test code execution timeout.
 
@@ -86,7 +86,7 @@ async def test_code_timeout(
     tool_input = llm.ToolInput(
         tool_name="code_executor", tool_args={"code": "while True: pass", "timeout": 1}
     )
-    result = await code_executor_tool_enabled.async_call(tool_input)
+    result = await code_executor_tool_enabled.async_call(hass, tool_input, llm_context)
 
     assert "error" in result
     assert (
@@ -95,13 +95,13 @@ async def test_code_timeout(
 
 
 async def test_restricted_builtins(
-    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool
+    hass: HomeAssistant, code_executor_tool_enabled: CodeExecutorTool, llm_context
 ):
     """Test that dangerous built-ins are restricted."""
     tool_input = llm.ToolInput(
         tool_name="code_executor", tool_args={"code": "open('/etc/passwd', 'r')"}
     )
-    result = await code_executor_tool_enabled.async_call(tool_input)
+    result = await code_executor_tool_enabled.async_call(hass, tool_input, llm_context)
 
     assert result["success"] is False
     assert "error" in result

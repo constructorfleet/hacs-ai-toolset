@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from homeassistant.helpers import llm
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.ai_toolset.const import DOMAIN
@@ -35,3 +36,15 @@ def mock_config_entry():
 def mock_hass(hass):
     """Return a mock Home Assistant instance."""
     return hass
+
+
+@pytest.fixture
+def llm_context():
+    """Return a mock LLM context."""
+    return llm.LLMContext(
+        platform="test_platform",
+        context=None,
+        language="en",
+        assistant="test_assistant",
+        device_id=None,
+    )

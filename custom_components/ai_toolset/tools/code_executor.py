@@ -42,7 +42,12 @@ class CodeExecutorTool(llm.Tool):
             CONF_ENABLE_CODE_EXECUTOR, DEFAULT_ENABLE_CODE_EXECUTOR
         )
 
-    async def async_call(self, tool_input: llm.ToolInput) -> dict[str, Any]:
+    async def async_call(
+        self,
+        hass: HomeAssistant,
+        tool_input: llm.ToolInput,
+        llm_context: llm.LLMContext,
+    ) -> dict[str, Any]:
         """Execute Python code."""
         if not self.enabled:
             return {"error": "Code executor is disabled. Enable it in configuration."}
