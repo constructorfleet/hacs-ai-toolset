@@ -5,11 +5,7 @@
   "config_flow": false,
   "documentation": "https://github.com/constructorfleet/hacs-ai-toolset",
   "iot_class": "local_polling",
-  "requirements": [
-    "aiohttp>=3.9.0",
-    "beautifulsoup4>=4.12.0",
-    "lxml>=5.0.0"
-  ],
+  "issue_tracker": "https://github.com/constructorfleet/hacs-ai-toolset",
   "version": "1.0.0",
   "homeassistant": "2026.1.0",
   "requirements": [

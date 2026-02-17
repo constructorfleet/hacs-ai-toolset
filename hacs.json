@@ -1,7 +1,6 @@
 {
   "name": "AI Toolset",
   "render_readme": true,
-  "domains": ["conversation"],
   "homeassistant": "2026.1.0",
   "zip_release": true,
   "filename": "hacs-ai-toolset.zip"
