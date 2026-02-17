@@ -36,7 +36,6 @@ class CodeExecutorTool(llm.Tool):
 
     def __init__(self, hass: HomeAssistant, config: dict[str, Any]) -> None:
         """Initialize the code executor tool."""
-        self.hass = hass
         self.config = config
         self.enabled = config.get(
             CONF_ENABLE_CODE_EXECUTOR, DEFAULT_ENABLE_CODE_EXECUTOR

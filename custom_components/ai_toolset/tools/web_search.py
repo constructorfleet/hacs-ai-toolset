@@ -44,7 +44,6 @@ class WebSearchTool(llm.Tool):
 
     def __init__(self, hass: HomeAssistant, config: dict[str, Any]) -> None:
         """Initialize the web search tool."""
-        self.hass = hass
         self.config = config
 
     async def async_call(

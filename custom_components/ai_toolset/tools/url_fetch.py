@@ -33,7 +33,7 @@ class URLFetchTool(llm.Tool):
 
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize the URL fetch tool."""
-        self.hass = hass
+        pass
 
     async def async_call(
         self,
