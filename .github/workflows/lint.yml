@@ -1,0 +1,53 @@
+name: Linting
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  lint:
+    name: Lint with Ruff and Black
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.10.3"
+
+      - name: Set up Python 3.14
+        run: uv python install 3.14
+
+      - name: Install dependencies
+        run: |
+          uv venv --python 3.14 .venv
+          uv pip install ruff black isort
+
+      - name: Run Ruff
+        run: uv run ruff check custom_components/ tests/
+
+      - name: Run Black
+        run: uv run black --check custom_components/ tests/
+
+      - name: Run isort
+        run: uv run isort --check-only custom_components/ tests/
+
+  validate:
+    name: Validate structure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: HACS Validation
+        uses: hacs/action@main
+        with:
+          category: integration
+          ignore: brands
+
+      - name: Hassfest Validation
+        uses: home-assistant/actions/hassfest@master
