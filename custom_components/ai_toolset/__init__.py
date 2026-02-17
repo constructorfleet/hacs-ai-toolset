@@ -64,16 +64,16 @@ class AIToolsetAPI(llm.API):
 
     async def async_get_api_instance(self, llm_context: llm.LLMContext) -> llm.APIInstance:
         """Return the API instance for this context.
-        
+
         Args:
             llm_context: The LLM context containing platform, language, etc.
-            
+
         Returns:
             An APIInstance with tools and configuration for this context.
         """
         # Get the tools for this API
         tools = await self.async_get_tools()
-        
+
         # Create and return the API instance
         return llm.APIInstance(
             api=self,

@@ -6,7 +6,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import llm
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.ai_toolset import async_setup, async_setup_entry, AIToolsetAPI
+from custom_components.ai_toolset import AIToolsetAPI, async_setup, async_setup_entry
 from custom_components.ai_toolset.const import DOMAIN
 
 
@@ -47,7 +47,7 @@ async def test_async_get_api_instance(
     """Test getting an API instance."""
     # Create the API
     api = AIToolsetAPI(hass, mock_config_entry)
-    
+
     # Create an LLM context
     llm_context = llm.LLMContext(
         platform="test_platform",
@@ -56,10 +56,10 @@ async def test_async_get_api_instance(
         assistant=None,
         device_id=None,
     )
-    
+
     # Get the API instance
     api_instance = await api.async_get_api_instance(llm_context)
-    
+
     # Verify the instance is correct
     assert isinstance(api_instance, llm.APIInstance)
     assert api_instance.api == api
