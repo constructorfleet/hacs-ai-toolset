@@ -1,6 +1,6 @@
 """Test web search tool."""
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from homeassistant.core import HomeAssistant
@@ -38,7 +38,7 @@ async def test_google_search(hass: HomeAssistant, web_search_tool: WebSearchTool
 
     mock_response = AsyncMock()
     mock_response.json = AsyncMock(return_value=mock_response_data)
-    mock_response.raise_for_status = AsyncMock()
+    mock_response.raise_for_status = Mock()
 
     with patch(
         "aiohttp.ClientSession.get",
@@ -72,7 +72,7 @@ async def test_google_image_search(hass: HomeAssistant, web_search_tool: WebSear
 
     mock_response = AsyncMock()
     mock_response.json = AsyncMock(return_value=mock_response_data)
-    mock_response.raise_for_status = AsyncMock()
+    mock_response.raise_for_status = Mock()
 
     with patch(
         "aiohttp.ClientSession.get",
@@ -121,7 +121,7 @@ async def test_search_max_results(hass: HomeAssistant, web_search_tool: WebSearc
 
     mock_response = AsyncMock()
     mock_response.json = AsyncMock(return_value=mock_response_data)
-    mock_response.raise_for_status = AsyncMock()
+    mock_response.raise_for_status = Mock()
 
     with patch(
         "aiohttp.ClientSession.get",

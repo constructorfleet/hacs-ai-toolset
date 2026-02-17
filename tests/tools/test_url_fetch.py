@@ -1,6 +1,6 @@
 """Test URL fetch tool."""
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from aiohttp import ClientError
@@ -35,7 +35,7 @@ async def test_url_fetch_html_content(
     mock_response = AsyncMock()
     mock_response.headers = {"Content-Type": "text/html"}
     mock_response.text = AsyncMock(return_value=html_content)
-    mock_response.raise_for_status = AsyncMock()
+    mock_response.raise_for_status = Mock()
 
     with patch(
         "aiohttp.ClientSession.get",
@@ -63,7 +63,7 @@ async def test_url_fetch_non_html_content(
     mock_response = AsyncMock()
     mock_response.headers = {"Content-Type": "text/plain"}
     mock_response.text = AsyncMock(return_value=text_content)
-    mock_response.raise_for_status = AsyncMock()
+    mock_response.raise_for_status = Mock()
 
     with patch(
         "aiohttp.ClientSession.get",
@@ -88,7 +88,7 @@ async def test_url_fetch_with_max_length(
     mock_response = AsyncMock()
     mock_response.headers = {"Content-Type": "text/html"}
     mock_response.text = AsyncMock(return_value=html_content)
-    mock_response.raise_for_status = AsyncMock()
+    mock_response.raise_for_status = Mock()
 
     with patch(
         "aiohttp.ClientSession.get",
