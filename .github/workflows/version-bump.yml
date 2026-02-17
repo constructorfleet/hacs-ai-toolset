@@ -75,5 +75,6 @@ jobs:
           # Commit and tag
           git add custom_components/ai_toolset/manifest.json
           git commit -m "Bump version to $NEW_VERSION"
+          git push origin HEAD
           git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION"
-          git push origin HEAD --tags
+          git push origin "v$NEW_VERSION"
