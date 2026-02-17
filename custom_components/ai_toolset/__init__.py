@@ -62,9 +62,27 @@ class AIToolsetAPI(llm.API):
             CodeExecutorTool(hass, config),
         ]
 
-    async def async_get_api_instance(self, llm_api: llm.APIInstance) -> llm.APIInstance:
-        """Get the API instance."""
-        return llm_api
+    async def async_get_api_instance(
+        self, llm_context: llm.LLMContext
+    ) -> llm.APIInstance:
+        """Return the API instance for this context.
+
+        Args:
+            llm_context: The LLM context containing platform, language, etc.
+
+        Returns:
+            An APIInstance with tools and configuration for this context.
+        """
+        # Get the tools for this API
+        tools = await self.async_get_tools()
+
+        # Create and return the API instance
+        return llm.APIInstance(
+            api=self,
+            api_prompt="You have access to AI Toolset tools for web search, URL fetching, automation creation, and code execution.",
+            llm_context=llm_context,
+            tools=tools,
+        )
 
     async def async_get_tools(self) -> list[llm.Tool]:
         """Get list of LLM tools."""
