@@ -62,7 +62,9 @@ class AIToolsetAPI(llm.API):
             CodeExecutorTool(hass, config),
         ]
 
-    async def async_get_api_instance(self, llm_context: llm.LLMContext) -> llm.APIInstance:
+    async def async_get_api_instance(
+        self, llm_context: llm.LLMContext
+    ) -> llm.APIInstance:
         """Return the API instance for this context.
 
         Args:

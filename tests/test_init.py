@@ -65,4 +65,6 @@ async def test_async_get_api_instance(
     assert api_instance.api == api
     assert api_instance.api.name == "AI Toolset"
     assert api_instance.llm_context == llm_context
-    assert len(api_instance.tools) == 4  # web_search, url_fetch, create_automation, code_executor
+    assert (
+        len(api_instance.tools) == 4
+    )  # web_search, url_fetch, create_automation, code_executor
