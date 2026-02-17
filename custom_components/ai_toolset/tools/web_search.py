@@ -1,21 +1,20 @@
 """Web search tool for AI Toolset."""
+
 from __future__ import annotations
 
 import logging
 from typing import Any
 
 import aiohttp
-from voluptuous import Optional, Required, Schema
-
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import llm
+from voluptuous import Optional, Required, Schema
 
 from ..const import (
     CONF_BING_API_KEY,
     CONF_GOOGLE_API_KEY,
     CONF_GOOGLE_CX,
     CONF_KAGI_API_KEY,
-    CONF_MAX_RESULTS,
     DEFAULT_MAX_RESULTS,
     SEARCH_ENGINE_BING,
     SEARCH_ENGINE_GOOGLE,
@@ -34,12 +33,14 @@ class WebSearchTool(llm.Tool):
         "Returns both text results and image results if available. "
         "Useful for finding current information, news, images, or general knowledge."
     )
-    parameters = Schema({
-        Required("query"): str,
-        Optional("search_type", default="text"): str,
-        Optional("engine"): str,
-        Optional("max_results", default=DEFAULT_MAX_RESULTS): int,
-    })
+    parameters = Schema(
+        {
+            Required("query"): str,
+            Optional("search_type", default="text"): str,
+            Optional("engine"): str,
+            Optional("max_results", default=DEFAULT_MAX_RESULTS): int,
+        }
+    )
 
     def __init__(self, hass: HomeAssistant, config: dict[str, Any]) -> None:
         """Initialize the web search tool."""
@@ -183,19 +184,23 @@ class WebSearchTool(llm.Tool):
                 results = []
                 if search_type == "image":
                     for item in data.get("value", []):
-                        results.append({
-                            "title": item.get("name", ""),
-                            "url": item.get("contentUrl", ""),
-                            "image_url": item.get("contentUrl", ""),
-                            "thumbnail_url": item.get("thumbnailUrl", ""),
-                            "snippet": item.get("name", ""),
-                        })
+                        results.append(
+                            {
+                                "title": item.get("name", ""),
+                                "url": item.get("contentUrl", ""),
+                                "image_url": item.get("contentUrl", ""),
+                                "thumbnail_url": item.get("thumbnailUrl", ""),
+                                "snippet": item.get("name", ""),
+                            }
+                        )
                 else:
                     for item in data.get("webPages", {}).get("value", []):
-                        results.append({
-                            "title": item.get("name", ""),
-                            "url": item.get("url", ""),
-                            "snippet": item.get("snippet", ""),
-                        })
+                        results.append(
+                            {
+                                "title": item.get("name", ""),
+                                "url": item.get("url", ""),
+                                "snippet": item.get("snippet", ""),
+                            }
+                        )
 
                 return results

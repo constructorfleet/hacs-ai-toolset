@@ -1,14 +1,15 @@
 """Create automation tool for AI Toolset."""
+
 from __future__ import annotations
 
 import logging
 from typing import Any
 
-from voluptuous import Required, Schema
-
 from homeassistant.components import automation
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv, llm
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import llm
+from voluptuous import Required, Schema
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,15 +24,17 @@ class CreateAutomationTool(llm.Tool):
         "triggers, conditions, and actions. "
         "Returns the automation ID if successful."
     )
-    parameters = Schema({
-        Required("automation_id"): str,
-        Required("alias"): str,
-        Required("trigger"): list,
-        Required("action"): list,
-        "condition": list,
-        "mode": cv.string,
-        "description": str,
-    })
+    parameters = Schema(
+        {
+            Required("automation_id"): str,
+            Required("alias"): str,
+            Required("trigger"): list,
+            Required("action"): list,
+            "condition": list,
+            "mode": cv.string,
+            "description": str,
+        }
+    )
 
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize the create automation tool."""
@@ -64,9 +67,7 @@ class CreateAutomationTool(llm.Tool):
                 config["description"] = description
 
             # Validate the automation configuration
-            automation_config = await automation.async_validate_config_item(
-                self.hass, config
-            )
+            await automation.async_validate_config_item(self.hass, config)
 
             # Create the automation
             component = self.hass.data.get("automation")
@@ -87,8 +88,8 @@ class CreateAutomationTool(llm.Tool):
                 "automation_id": automation_id,
                 "alias": alias,
                 "message": f"Automation '{alias}' created successfully. "
-                          "Note: This automation is not persisted to storage. "
-                          "Use the Home Assistant UI to save it permanently.",
+                "Note: This automation is not persisted to storage. "
+                "Use the Home Assistant UI to save it permanently.",
             }
 
         except Exception as err:

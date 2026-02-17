@@ -1,7 +1,6 @@
 """Test configuration for AI Toolset."""
-from __future__ import annotations
 
-from unittest.mock import patch
+from __future__ import annotations
 
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry

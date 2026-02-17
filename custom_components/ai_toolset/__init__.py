@@ -1,4 +1,5 @@
 """AI Toolset integration for Home Assistant LLM API."""
+
 from __future__ import annotations
 
 import logging
@@ -29,11 +30,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up AI Toolset from a config entry."""
     # Store the config entry data
     hass.data[DOMAIN][entry.entry_id] = entry.data
-    
+
     # Register LLM tools
     api = AIToolsetAPI(hass, entry)
     llm.async_register_api(hass, api)
-    
+
     _LOGGER.info("AI Toolset integration loaded with %d tools", len(api.tools))
     return True
 
@@ -51,7 +52,7 @@ class AIToolsetAPI(llm.API):
         """Initialize the API."""
         super().__init__(hass=hass, id=DOMAIN, name="AI Toolset")
         self.entry = entry
-        
+
         # Initialize all tools
         config = entry.data
         self.tools = [
@@ -75,5 +76,5 @@ class AIToolsetAPI(llm.API):
         for tool in self.tools:
             if tool.name == tool_input.tool_name:
                 return await tool.async_call(tool_input)
-        
+
         return {"error": f"Unknown tool: {tool_input.tool_name}"}

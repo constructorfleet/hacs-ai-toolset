@@ -25,13 +25,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.13"
+          version: "0.10.3"
 
-      - name: Install bump2version
-        run: pip install bump2version
+      - name: Set up Python 3.14
+        run: uv python install 3.14
 
       - name: Configure git
         run: |

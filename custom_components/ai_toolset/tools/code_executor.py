@@ -1,4 +1,5 @@
 """Code executor tool for AI Toolset."""
+
 from __future__ import annotations
 
 import asyncio
@@ -7,10 +8,9 @@ import sys
 from io import StringIO
 from typing import Any
 
-from voluptuous import Optional, Required, Schema
-
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import llm
+from voluptuous import Optional, Required, Schema
 
 from ..const import CONF_ENABLE_CODE_EXECUTOR, DEFAULT_ENABLE_CODE_EXECUTOR
 
@@ -27,37 +27,35 @@ class CodeExecutorTool(llm.Tool):
         "Returns the output and any errors. "
         "WARNING: This tool can execute arbitrary code. Use with caution."
     )
-    parameters = Schema({
-        Required("code"): str,
-        Optional("timeout", default=5): int,
-    })
+    parameters = Schema(
+        {
+            Required("code"): str,
+            Optional("timeout", default=5): int,
+        }
+    )
 
     def __init__(self, hass: HomeAssistant, config: dict[str, Any]) -> None:
         """Initialize the code executor tool."""
         self.hass = hass
         self.config = config
-        self.enabled = config.get(CONF_ENABLE_CODE_EXECUTOR, DEFAULT_ENABLE_CODE_EXECUTOR)
+        self.enabled = config.get(
+            CONF_ENABLE_CODE_EXECUTOR, DEFAULT_ENABLE_CODE_EXECUTOR
+        )
 
     async def async_call(self, tool_input: llm.ToolInput) -> dict[str, Any]:
         """Execute Python code."""
         if not self.enabled:
-            return {
-                "error": "Code executor is disabled. Enable it in configuration."
-            }
+            return {"error": "Code executor is disabled. Enable it in configuration."}
 
         code = tool_input.tool_args["code"]
         timeout = tool_input.tool_args.get("timeout", 5)
 
         try:
             # Execute code with timeout
-            result = await asyncio.wait_for(
-                self._execute_code(code), timeout=timeout
-            )
+            result = await asyncio.wait_for(self._execute_code(code), timeout=timeout)
             return result
-        except asyncio.TimeoutError:
-            return {
-                "error": f"Code execution timed out after {timeout} seconds"
-            }
+        except TimeoutError:
+            return {"error": f"Code execution timed out after {timeout} seconds"}
         except Exception as err:
             _LOGGER.exception("Error executing code")
             return {"error": str(err)}

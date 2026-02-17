@@ -1,4 +1,5 @@
 """Test URL fetch tool."""
+
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -15,7 +16,9 @@ def url_fetch_tool(hass: HomeAssistant):
     return URLFetchTool(hass)
 
 
-async def test_url_fetch_html_content(hass: HomeAssistant, url_fetch_tool: URLFetchTool):
+async def test_url_fetch_html_content(
+    hass: HomeAssistant, url_fetch_tool: URLFetchTool
+):
     """Test fetching HTML content."""
     html_content = """
     <html>
@@ -28,19 +31,21 @@ async def test_url_fetch_html_content(hass: HomeAssistant, url_fetch_tool: URLFe
         </body>
     </html>
     """
-    
+
     mock_response = AsyncMock()
     mock_response.headers = {"Content-Type": "text/html"}
     mock_response.text = AsyncMock(return_value=html_content)
     mock_response.raise_for_status = AsyncMock()
-    
-    with patch("aiohttp.ClientSession.get", return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_response))):
+
+    with patch(
+        "aiohttp.ClientSession.get",
+        return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_response)),
+    ):
         tool_input = llm.ToolInput(
-            tool_name="url_fetch",
-            tool_args={"url": "https://example.com"}
+            tool_name="url_fetch", tool_args={"url": "https://example.com"}
         )
         result = await url_fetch_tool.async_call(tool_input)
-        
+
         assert "error" not in result
         assert result["url"] == "https://example.com"
         assert "Test Page" in result["title"]
@@ -49,54 +54,66 @@ async def test_url_fetch_html_content(hass: HomeAssistant, url_fetch_tool: URLFe
         assert "Test paragraph" in result["text"]
 
 
-async def test_url_fetch_non_html_content(hass: HomeAssistant, url_fetch_tool: URLFetchTool):
+async def test_url_fetch_non_html_content(
+    hass: HomeAssistant, url_fetch_tool: URLFetchTool
+):
     """Test fetching non-HTML content."""
     text_content = "Plain text content"
-    
+
     mock_response = AsyncMock()
     mock_response.headers = {"Content-Type": "text/plain"}
     mock_response.text = AsyncMock(return_value=text_content)
     mock_response.raise_for_status = AsyncMock()
-    
-    with patch("aiohttp.ClientSession.get", return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_response))):
+
+    with patch(
+        "aiohttp.ClientSession.get",
+        return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_response)),
+    ):
         tool_input = llm.ToolInput(
-            tool_name="url_fetch",
-            tool_args={"url": "https://example.com/file.txt"}
+            tool_name="url_fetch", tool_args={"url": "https://example.com/file.txt"}
         )
         result = await url_fetch_tool.async_call(tool_input)
-        
+
         assert "error" not in result
         assert result["content_type"] == "text/plain"
         assert result["text"] == text_content
 
 
-async def test_url_fetch_with_max_length(hass: HomeAssistant, url_fetch_tool: URLFetchTool):
+async def test_url_fetch_with_max_length(
+    hass: HomeAssistant, url_fetch_tool: URLFetchTool
+):
     """Test fetching content with max length limit."""
     html_content = "<html><body>" + ("x" * 20000) + "</body></html>"
-    
+
     mock_response = AsyncMock()
     mock_response.headers = {"Content-Type": "text/html"}
     mock_response.text = AsyncMock(return_value=html_content)
     mock_response.raise_for_status = AsyncMock()
-    
-    with patch("aiohttp.ClientSession.get", return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_response))):
+
+    with patch(
+        "aiohttp.ClientSession.get",
+        return_value=AsyncMock(__aenter__=AsyncMock(return_value=mock_response)),
+    ):
         tool_input = llm.ToolInput(
             tool_name="url_fetch",
-            tool_args={"url": "https://example.com", "max_length": 100}
+            tool_args={"url": "https://example.com", "max_length": 100},
         )
         result = await url_fetch_tool.async_call(tool_input)
-        
+
         assert "error" not in result
         assert len(result["text"]) <= 100
 
 
-async def test_url_fetch_error_handling(hass: HomeAssistant, url_fetch_tool: URLFetchTool):
+async def test_url_fetch_error_handling(
+    hass: HomeAssistant, url_fetch_tool: URLFetchTool
+):
     """Test error handling for URL fetch."""
-    with patch("aiohttp.ClientSession.get", side_effect=ClientError("Connection error")):
+    with patch(
+        "aiohttp.ClientSession.get", side_effect=ClientError("Connection error")
+    ):
         tool_input = llm.ToolInput(
-            tool_name="url_fetch",
-            tool_args={"url": "https://example.com"}
+            tool_name="url_fetch", tool_args={"url": "https://example.com"}
         )
         result = await url_fetch_tool.async_call(tool_input)
-        
+
         assert "error" in result

@@ -1,4 +1,5 @@
 """URL fetch tool for AI Toolset."""
+
 from __future__ import annotations
 
 import logging
@@ -6,10 +7,9 @@ from typing import Any
 
 import aiohttp
 from bs4 import BeautifulSoup
-from voluptuous import Optional, Required, Schema
-
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import llm
+from voluptuous import Optional, Required, Schema
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,11 +23,13 @@ class URLFetchTool(llm.Tool):
         "Returns the page title, text content, and metadata. "
         "Useful for reading articles, documentation, or any web content."
     )
-    parameters = Schema({
-        Required("url"): str,
-        Optional("include_html", default=False): bool,
-        Optional("max_length", default=10000): int,
-    })
+    parameters = Schema(
+        {
+            Required("url"): str,
+            Optional("include_html", default=False): bool,
+            Optional("max_length", default=10000): int,
+        }
+    )
 
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize the URL fetch tool."""
@@ -50,8 +52,11 @@ class URLFetchTool(llm.Tool):
                 ) as response:
                     response.raise_for_status()
                     content_type = response.headers.get("Content-Type", "")
-                    
-                    if "text/html" not in content_type and "application/xhtml" not in content_type:
+
+                    if (
+                        "text/html" not in content_type
+                        and "application/xhtml" not in content_type
+                    ):
                         # For non-HTML content, return as-is
                         text = await response.text()
                         return {
